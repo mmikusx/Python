@@ -347,8 +347,15 @@ class Labirynt(Frame):
                     ramka()
                 else:
                     rozmiar = int(pole_do_wpisywania.get())
-                    labirynt(5, 5, rozmiar)
-                    ramka()
+                    if rozmiar < 3:
+                        tkinter.messagebox.showinfo("Ostrzeżenie", "Rozmiar "
+                                                                   "musi "
+                                                                   "wynosić "
+                                                                   "minimum "
+                                                                   "3!")
+                    else:
+                        labirynt(5, 5, rozmiar)
+                        ramka()
 
                 okno.update()
                 okno.update_idletasks()
@@ -370,8 +377,15 @@ class Labirynt(Frame):
                     ramka()
                 else:
                     rozmiar = int(pole_do_wpisywania.get())
-                    zbuduj_szkielet_labiryntu(rozmiar)
-                    ramka()
+                    if rozmiar < 3:
+                        tkinter.messagebox.showinfo("Ostrzeżenie", "Rozmiar "
+                                                                   "musi "
+                                                                   "wynosić "
+                                                                   "minimum "
+                                                                   "3!")
+                    else:
+                        zbuduj_szkielet_labiryntu(rozmiar)
+                        ramka()
             except ValueError:
                 tkinter.messagebox.showinfo("Ostrzeżenie",
                                             "Podaj rozmiar planszy w postaci "
