@@ -1,16 +1,16 @@
-import random as rnd
+import random
 import tkinter as tk
-import tkinter.filedialog as fdialog
-import tkinter.messagebox as msgbox
-import PIL.Image as img
-import json as js
+from tkinter import filedialog
+from tkinter import messagebox
+from PIL import Image
+import json
 
 okno = tk.Tk()
 
 
 def on_closing():
     """Zamyka okno i wychodzi z programu po kliknięciu przycisku zamknięcia."""
-    if msgbox.askyesno("Wyjscie", "Na pewno chcesz wyjsc z programu?"):
+    if messagebox.askyesno("Wyjscie", "Na pewno chcesz wyjsc z programu?"):
         okno.destroy()
 
 
@@ -165,7 +165,7 @@ class Labirynt(tk.Frame):
                     komorka.append("lewo")
 
                 if len(komorka) > 0:
-                    cell_chosen = (rnd.choice(komorka))
+                    cell_chosen = (random.choice(komorka))
 
                     if cell_chosen == "prawo":
                         przesun(cell_chosen, x, y, rozmiar)
@@ -202,28 +202,28 @@ class Labirynt(tk.Frame):
                 koniec_generowania = tk.Label(okno,
                                            text='Skonczono generowanie '
                                                 'labiryntu')
-                canvas.create_window(szerokosc_okna / 2, 647, height=20,
+                canvas.create_window(szerokosc_okna // 2, 647, height=20,
                                      width=250, window=koniec_generowania)
 
                 zapisz_obraz = tk.Button(text='Zapisz jako obraz',
                                       command=zapisz_obraz_do_png)
-                canvas.create_window(szerokosc_okna / 2 - 100, 668,
+                canvas.create_window(szerokosc_okna // 2 - 100, 668,
                                      window=zapisz_obraz)
 
                 zapisz_labirynt = tk.Button(text='Zapisz wzor labiryntu',
                                          command=zapisz_wzor_labiryntu)
-                canvas.create_window(szerokosc_okna / 2 + 100, 668,
+                canvas.create_window(szerokosc_okna // 2 + 100, 668,
                                      window=zapisz_labirynt)
 
         def zapisz_obraz_do_png():
             """Akcja dla przycisku zapisu do obrazka. Zapisuje bieżące
             płótno labiryntu jako plik obrazu PNG. """
-            file_path = fdialog.asksaveasfilename(defaultextension=".ps",
+            file_path = filedialog.asksaveasfilename(defaultextension=".png",
                                                      filetypes=[
                                                          ("PNG", "*.png")])
 
             if len(file_path) != 0:
-                image = img.new('RGB', (szerokosc_okna, 550),
+                image = Image.new('RGB', (550, 550),
                                   (255, 255, 255))
 
                 # wygenerowanie obrazka z płótna
@@ -231,7 +231,7 @@ class Labirynt(tk.Frame):
 
                 # otwarcie pliku PostScript i narysowanie go na obiekcie Image
                 with open(f"{file_path}", "rb") as f:
-                    image_ps = img.open(f)
+                    image_ps = Image.open(f)
                     image.paste(image_ps, (0, 0))
 
                 # zapisanie obiektu Image jako pliku png
@@ -244,25 +244,25 @@ class Labirynt(tk.Frame):
                                             klucz, wartosc in
                                             slownik_przejsc.items()}
 
-            file_path = fdialog.asksaveasfilename(defaultextension=".js",
+            file_path = filedialog.asksaveasfilename(defaultextension=".json",
                                                      filetypes=[("JSON files",
-                                                                 "*.js")])
+                                                                 "*.json")])
 
             if len(file_path) != 0:
                 with open(file_path, "w") as outfile:
                     # Zapisujemy słownik do pliku JSON
-                    js.dump(slownik_przejsc_do_zapisania, outfile)
+                    json.dump(slownik_przejsc_do_zapisania, outfile)
 
         def wczytaj_wzor_labiryntu():
             """Akcja dla przycisku wczytywania labiryntu. Ładuje zapisaną
             serie przejść labiryntu z pliku JSON. """
-            file_path = fdialog.askopenfilename(
-                filetypes=[("JSON files", "*.js")])
+            file_path = filedialog.askopenfilename(
+                filetypes=[("JSON files", "*.json")])
 
             if len(file_path) != 0:
                 wyczysc_wszystko()
                 with open(file_path, 'r') as f:
-                    dane = js.load(f)
+                    dane = json.load(f)
                 rozmiar_wczytanego = int(dane.get('0'))
 
                 zbuduj_szkielet_labiryntu(rozmiar_wczytanego)
@@ -298,12 +298,12 @@ class Labirynt(tk.Frame):
                 koniec_wczytywania = tk.Label(okno,
                                            text='Skonczono wczytywanie '
                                                 'labiryntu')
-                canvas.create_window(szerokosc_okna / 2, 647, height=20,
+                canvas.create_window(szerokosc_okna // 2, 647, height=20,
                                      width=250, window=koniec_wczytywania)
 
                 zapisz_obraz = tk.Button(text='Zapisz jako obraz',
                                       command=zapisz_obraz_do_png)
-                canvas.create_window(szerokosc_okna / 2, 668,
+                canvas.create_window(szerokosc_okna // 2, 668,
                                      window=zapisz_obraz)
 
         def wyczysc_plotno():
@@ -313,15 +313,16 @@ class Labirynt(tk.Frame):
         def wyczysc_napis():
             """Usuwa napis powstały po poprawnym wygenerowaniu lub wczytaniu
             labiryntu """
-            canvas.create_window(szerokosc_okna / 2, 647, height=20, width=250,
+            canvas.create_window(szerokosc_okna // 2, 647, height=20,
+                                 width=250,
                                  window=tk.Label(okno, text=''))
 
         def wyczysc_przyciski_po_generowaniu():
             """Usuwa przyciski akcji powstałe po poprawnym generowaniu
             labiryntu """
-            canvas.create_window(szerokosc_okna / 2 - 100, 669, height=25,
+            canvas.create_window(szerokosc_okna // 2 - 100, 669, height=25,
                                  width=250, window=tk.Label(okno, text=''))
-            canvas.create_window(szerokosc_okna / 2 + 100, 669, height=25,
+            canvas.create_window(szerokosc_okna // 2 + 100, 669, height=25,
                                  width=250, window=tk.Label(okno, text=''))
 
         def wyczysc_wszystko():
@@ -348,7 +349,7 @@ class Labirynt(tk.Frame):
                 else:
                     rozmiar = int(pole_do_wpisywania.get())
                     if rozmiar < 3:
-                        msgbox.showinfo("Ostrzeżenie", "Rozmiar "
+                        messagebox.showinfo("Ostrzeżenie", "Rozmiar "
                                                                    "musi "
                                                                    "wynosić "
                                                                    "minimum "
@@ -360,7 +361,7 @@ class Labirynt(tk.Frame):
                 okno.update()
                 okno.update_idletasks()
             except ValueError:
-                msgbox.showinfo("Ostrzeżenie",
+                messagebox.showinfo("Ostrzeżenie",
                                             "Podaj rozmiar planszy w postaci "
                                             "liczby całkowitej!")
 
@@ -378,7 +379,7 @@ class Labirynt(tk.Frame):
                 else:
                     rozmiar = int(pole_do_wpisywania.get())
                     if rozmiar < 3:
-                        msgbox.showinfo("Ostrzeżenie", "Rozmiar "
+                        messagebox.showinfo("Ostrzeżenie", "Rozmiar "
                                                                    "musi "
                                                                    "wynosić "
                                                                    "minimum "
@@ -387,31 +388,31 @@ class Labirynt(tk.Frame):
                         zbuduj_szkielet_labiryntu(rozmiar)
                         ramka()
             except ValueError:
-                msgbox.showinfo("Ostrzeżenie",
+                messagebox.showinfo("Ostrzeżenie",
                                             "Podaj rozmiar planszy w postaci "
                                             "liczby całkowitej!")
 
         pole_do_wpisywania = tk.Entry(okno)
-        canvas.create_window(szerokosc_okna / 2, 580, height=20, width=50,
+        canvas.create_window(szerokosc_okna // 2, 580, height=20, width=50,
                              window=pole_do_wpisywania)
 
         napis_rozmiar = tk.Label(okno, text="Rozmiar planszy")
-        canvas.create_window(szerokosc_okna / 2, 560, height=20, width=300,
+        canvas.create_window(szerokosc_okna // 2, 560, height=20, width=300,
                              window=napis_rozmiar)
 
         przycisk_generowania = tk.Button(text='Generuj labirynt',
                                        command=generuj)
-        canvas.create_window(szerokosc_okna / 2 - 100, 600,
+        canvas.create_window(szerokosc_okna // 2 - 100, 600,
                              window=przycisk_generowania)
 
         przycisk_wczytania_lab = tk.Button(text='Wczytaj wzor labiryntu',
                                         command=wczytaj_wzor_labiryntu)
-        canvas.create_window(szerokosc_okna / 2, 625,
+        canvas.create_window(szerokosc_okna // 2, 625,
                              window=przycisk_wczytania_lab)
 
         przycisk_budowania_scian = tk.Button(text='Narysuj sama sciany',
                                           command=buduj_same_sciany)
-        canvas.create_window(szerokosc_okna / 2 + 100, 600,
+        canvas.create_window(szerokosc_okna // 2 + 100, 600,
                              window=przycisk_budowania_scian)
 
         canvas.pack(fill=tk.BOTH, expand=1)
